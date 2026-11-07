@@ -1,0 +1,18 @@
+## .NET & Build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio & JetBrains
+.vs/
+.idea/
+.vscode/
+
+## Environment & Secrets (Security Sensitive)
+appsettings.Development.json
+secrets.json
+*.local.json
+
