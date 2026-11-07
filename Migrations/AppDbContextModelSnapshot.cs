@@ -604,7 +604,7 @@ namespace AstronautHealthMonitoring.Migrations
                             RequiredEquipment = "Environmental console, personal air sampler",
                             Severity = "Moderate",
                             StepByStepInstructions = "1. Relocate away from enclosed dead-air corners to a central ventilation duct.\n2. Confirm local air circulation fan is running.\n3. Report readings and symptoms to Ground Monitor.\n4. Check environmental console for CO2 scrubber status.",
-                            TargetCondition = "Elevated respiratory rate (>18 breaths/min) with persistent frontal headache",
+                            TargetCondition = "Elevated respiratory rate (>18 breaths/min) with persistent headache",
                             Title = "Elevated Cabin CO2 / Headache Protocol"
                         });
                 });
@@ -765,7 +765,7 @@ namespace AstronautHealthMonitoring.Migrations
                         new
                         {
                             Id = 3,
-                            ActionGuidance = "SAMPLE: Take calm, deep breaths and reposition the sensor. If the reading remains below 95%, check cabin oxygen levels and notify your monitor immediately.",
+                            ActionGuidance = "SAMPLE: Reposition the sensor. If the reading remains below 95%, check cabin oxygen levels and notify your monitor immediately.",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             HowToMeasure = "Place the sensor on a clean, warm fingertip and keep your hand still until the reading stabilizes.",
                             InterpretationGuidance = "Standard Earth reference is 95% to 100%. Readings below 95% may indicate shallow breathing, cold extremities, or low ambient oxygen.",
@@ -776,7 +776,7 @@ namespace AstronautHealthMonitoring.Migrations
                         new
                         {
                             Id = 4,
-                            ActionGuidance = "SAMPLE: Note whether you were resting or had just exercised. Check the sensor, adjust clothing, hydrate, and re-measure. Report persistent fever to your monitor.",
+                            ActionGuidance = "SAMPLE: Note whether you were resting or had just exercised. Check the sensor, hydrate, and re-measure. Report persistent fever to your monitor.",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             HowToMeasure = "Use the approved tympanic ear thermometer or forehead sensor according to device instructions.",
                             InterpretationGuidance = "Standard Earth reference is 36.5°C to 37.3°C. Body temperature can rise during or immediately after exercise.",
@@ -790,7 +790,7 @@ namespace AstronautHealthMonitoring.Migrations
                             ActionGuidance = "SAMPLE: Check your meal timing and whether you are fasting. Re-measure and follow your physician's nutrition and glucose management plan.",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             HowToMeasure = "Use a clean test strip in the glucometer with a capillary blood drop, always noting meal context.",
-                            InterpretationGuidance = "Standard Earth fasting reference is 70 to 99 mg/dL. Values naturally rise after eating. Must always be interpreted with meal context.",
+                            InterpretationGuidance = "The research gives an Earth fasting reference of up to 99 mg/dL. Values naturally rise after eating. Always interpret with meal context.",
                             VitalSignTypeId = 5,
                             WhatIsIt = "Blood glucose measures the concentration of sugar in your blood.",
                             WhyItMatters = "May be associated with energy availability and metabolic changes in spaceflight."
@@ -798,7 +798,7 @@ namespace AstronautHealthMonitoring.Migrations
                         new
                         {
                             Id = 6,
-                            ActionGuidance = "SAMPLE: If breathing feels fast or labored at rest, check cabin air readings, ensure you are in an area with good air circulation, and contact your monitor.",
+                            ActionGuidance = "SAMPLE: If breathing feels fast or labored at rest, check cabin air readings and contact your monitor.",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             HowToMeasure = "Rest quietly and count your breathing cycles over 60 seconds, or use the biometric chest sensor.",
                             InterpretationGuidance = "Standard Earth reference is 12 to 18 breaths per minute. Elevated rates can occur with physical effort or elevated cabin CO2.",
@@ -979,6 +979,12 @@ namespace AstronautHealthMonitoring.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<double?>("EmergencyAbove")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("EmergencyBelow")
+                        .HasColumnType("double precision");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -988,43 +994,19 @@ namespace AstronautHealthMonitoring.Migrations
                     b.Property<int?>("MaxAge")
                         .HasColumnType("integer");
 
-                    b.Property<double?>("MaxEmergency")
-                        .HasColumnType("double precision");
-
                     b.Property<double>("MaxNormal")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("MaxSecondaryEmergency")
                         .HasColumnType("double precision");
 
                     b.Property<double?>("MaxSecondaryNormal")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("MaxSecondaryWarning")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("MaxWarning")
-                        .HasColumnType("double precision");
-
                     b.Property<int?>("MinAge")
                         .HasColumnType("integer");
-
-                    b.Property<double?>("MinEmergency")
-                        .HasColumnType("double precision");
 
                     b.Property<double>("MinNormal")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("MinSecondaryEmergency")
-                        .HasColumnType("double precision");
-
                     b.Property<double?>("MinSecondaryNormal")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("MinSecondaryWarning")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("MinWarning")
                         .HasColumnType("double precision");
 
                     b.Property<string>("Notes")
@@ -1042,6 +1024,12 @@ namespace AstronautHealthMonitoring.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<double?>("SecondaryEmergencyAbove")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("SecondaryEmergencyBelow")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Source")
                         .IsRequired()
@@ -1065,14 +1053,12 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyAbove = 140.0,
+                            EmergencyBelow = 40.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 140.0,
                             MaxNormal = 100.0,
-                            MaxWarning = 110.0,
-                            MinEmergency = 40.0,
                             MinNormal = 60.0,
-                            MinWarning = 50.0,
                             Notes = "PLACEHOLDER - requires review by authorized staff",
                             Scope = "EarthGeneral",
                             Source = "Terrestrial Clinical Standards",
@@ -1082,22 +1068,18 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 2,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyAbove = 160.0,
+                            EmergencyBelow = 70.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 160.0,
                             MaxNormal = 120.0,
-                            MaxSecondaryEmergency = 100.0,
                             MaxSecondaryNormal = 80.0,
-                            MaxSecondaryWarning = 89.0,
-                            MaxWarning = 139.0,
-                            MinEmergency = 70.0,
                             MinNormal = 90.0,
-                            MinSecondaryEmergency = 45.0,
                             MinSecondaryNormal = 60.0,
-                            MinSecondaryWarning = 50.0,
-                            MinWarning = 80.0,
                             Notes = "PLACEHOLDER - requires review by authorized staff",
                             Scope = "EarthGeneral",
+                            SecondaryEmergencyAbove = 100.0,
+                            SecondaryEmergencyBelow = 45.0,
                             Source = "Terrestrial Clinical Standards",
                             VitalSignTypeId = 2
                         },
@@ -1105,13 +1087,11 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 3,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyBelow = 90.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 89.0,
                             MaxNormal = 100.0,
-                            MaxWarning = 94.0,
                             MinNormal = 95.0,
-                            MinWarning = 90.0,
                             Notes = "PLACEHOLDER - requires review by authorized staff",
                             Scope = "EarthGeneral",
                             Source = "Terrestrial Clinical Standards",
@@ -1121,14 +1101,12 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 4,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyAbove = 38.5,
+                            EmergencyBelow = 35.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 38.5,
                             MaxNormal = 37.299999999999997,
-                            MaxWarning = 37.799999999999997,
-                            MinEmergency = 35.0,
                             MinNormal = 36.5,
-                            MinWarning = 35.5,
                             Notes = "PLACEHOLDER - requires review by authorized staff",
                             Scope = "EarthGeneral",
                             Source = "Terrestrial Clinical Standards",
@@ -1138,15 +1116,13 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 5,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyAbove = 200.0,
+                            EmergencyBelow = 50.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 200.0,
                             MaxNormal = 99.0,
-                            MaxWarning = 125.0,
-                            MinEmergency = 50.0,
                             MinNormal = 70.0,
-                            MinWarning = 60.0,
-                            Notes = "PLACEHOLDER - requires review by authorized staff. Fasting only (up to 99 mg/dL); post-meal reference ranges are not established in source.",
+                            Notes = "PLACEHOLDER - requires review by authorized staff. 70 is a PLACEHOLDER; fasting reference up to 99 mg/dL.",
                             Scope = "EarthGeneral",
                             Source = "Terrestrial Clinical Standards",
                             VitalSignTypeId = 5
@@ -1155,14 +1131,12 @@ namespace AstronautHealthMonitoring.Migrations
                         {
                             Id = 6,
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EmergencyAbove = 30.0,
+                            EmergencyBelow = 8.0,
                             IsActive = true,
                             IsMissionApproved = false,
-                            MaxEmergency = 30.0,
                             MaxNormal = 18.0,
-                            MaxWarning = 24.0,
-                            MinEmergency = 8.0,
                             MinNormal = 12.0,
-                            MinWarning = 10.0,
                             Notes = "PLACEHOLDER - requires review by authorized staff",
                             Scope = "EarthGeneral",
                             Source = "Terrestrial Clinical Standards",
@@ -1301,7 +1275,7 @@ namespace AstronautHealthMonitoring.Migrations
                             Id = 1,
                             Code = "ORTHOSTATIC_INTOLERANCE",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "May be associated with cardiovascular deconditioning and fluid volume redistribution following transition between gravitational environments.",
+                            Description = "May be associated with changes in how body fluids are distributed and how the circulatory system adapts to microgravity, especially when returning to gravity.",
                             IsMatchable = true,
                             Name = "Orthostatic Intolerance",
                             Notes = "SAMPLE CONTENT - pending staff review",
@@ -1340,7 +1314,7 @@ namespace AstronautHealthMonitoring.Migrations
                             Id = 4,
                             Code = "DEHYDRATION_NUTRITION",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "May be associated with reduced circulating plasma volume or inadequate nutritional replenishment during flight.",
+                            Description = "May be associated with stored food, nutritional needs, physical activity, and mission conditions that affect fluid and energy balance.",
                             IsMatchable = true,
                             Name = "Hydration and Nutrition Depletion",
                             Notes = "SAMPLE CONTENT - pending staff review",
@@ -1366,7 +1340,7 @@ namespace AstronautHealthMonitoring.Migrations
                             Id = 6,
                             Code = "STRESS_ISOLATION",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "May be associated with prolonged confinement, high operational workload, sensory deprivation, and separation from home.",
+                            Description = "May be associated with long periods in a small space, distance from family and familiar surroundings, and continuous contact with the same crew.",
                             IsMatchable = true,
                             Name = "Stress and Mission Isolation",
                             Notes = "SAMPLE CONTENT - pending staff review. Never label as depression or anxiety.",

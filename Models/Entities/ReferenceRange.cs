@@ -10,8 +10,8 @@ namespace AstronautHealthMonitoring.Models.Entities;
 /// </summary>
 /// <remarks>
 /// Status determination rule:
-/// - Routine if the value(s) are within [MinNormal, MaxNormal] (both values for paired metrics).
-/// - Emergency if any value is below EmergencyBelow or above EmergencyAbove (null values are ignored).
+/// - Routine if the value is within [MinNormal, MaxNormal] (for paired metrics, BOTH values must be within their normal ranges).
+/// - Emergency if the value is below EmergencyBelow or above EmergencyAbove (either may be null; for paired metrics check each value against its own secondary pair).
 /// - Otherwise MedicalAttention.
 /// </remarks>
 public class ReferenceRange : BaseEntity

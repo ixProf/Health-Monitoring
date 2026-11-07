@@ -222,7 +222,7 @@ public static class ModelBuilderExtensions
                 WhyItMatters = "Helps verify adequate oxygen delivery from cabin air or life support equipment.",
                 HowToMeasure = "Place the sensor on a clean, warm fingertip and keep your hand still until the reading stabilizes.",
                 InterpretationGuidance = "Standard Earth reference is 95% to 100%. Readings below 95% may indicate shallow breathing, cold extremities, or low ambient oxygen.",
-                ActionGuidance = "SAMPLE: Take calm, deep breaths and reposition the sensor. If the reading remains below 95%, check cabin oxygen levels and notify your monitor immediately.",
+                ActionGuidance = "SAMPLE: Reposition the sensor. If the reading remains below 95%, check cabin oxygen levels and notify your monitor immediately.",
                 CreatedAt = seedTimeUtc
             },
             new HealthMetricGuide
@@ -233,7 +233,7 @@ public static class ModelBuilderExtensions
                 WhyItMatters = "May be associated with infection, inflammation, heavy physical exertion, or ambient heat stress.",
                 HowToMeasure = "Use the approved tympanic ear thermometer or forehead sensor according to device instructions.",
                 InterpretationGuidance = "Standard Earth reference is 36.5°C to 37.3°C. Body temperature can rise during or immediately after exercise.",
-                ActionGuidance = "SAMPLE: Note whether you were resting or had just exercised. Check the sensor, adjust clothing, hydrate, and re-measure. Report persistent fever to your monitor.",
+                ActionGuidance = "SAMPLE: Note whether you were resting or had just exercised. Check the sensor, hydrate, and re-measure. Report persistent fever to your monitor.",
                 CreatedAt = seedTimeUtc
             },
             new HealthMetricGuide
@@ -243,7 +243,7 @@ public static class ModelBuilderExtensions
                 WhatIsIt = "Blood glucose measures the concentration of sugar in your blood.",
                 WhyItMatters = "May be associated with energy availability and metabolic changes in spaceflight.",
                 HowToMeasure = "Use a clean test strip in the glucometer with a capillary blood drop, always noting meal context.",
-                InterpretationGuidance = "Standard Earth fasting reference is 70 to 99 mg/dL. Values naturally rise after eating. Must always be interpreted with meal context.",
+                InterpretationGuidance = "The research gives an Earth fasting reference of up to 99 mg/dL. Values naturally rise after eating. Always interpret with meal context.",
                 ActionGuidance = "SAMPLE: Check your meal timing and whether you are fasting. Re-measure and follow your physician's nutrition and glucose management plan.",
                 CreatedAt = seedTimeUtc
             },
@@ -255,7 +255,7 @@ public static class ModelBuilderExtensions
                 WhyItMatters = "May be associated with physical exertion, cabin air quality, or carbon dioxide levels.",
                 HowToMeasure = "Rest quietly and count your breathing cycles over 60 seconds, or use the biometric chest sensor.",
                 InterpretationGuidance = "Standard Earth reference is 12 to 18 breaths per minute. Elevated rates can occur with physical effort or elevated cabin CO2.",
-                ActionGuidance = "SAMPLE: If breathing feels fast or labored at rest, check cabin air readings, ensure you are in an area with good air circulation, and contact your monitor.",
+                ActionGuidance = "SAMPLE: If breathing feels fast or labored at rest, check cabin air readings and contact your monitor.",
                 CreatedAt = seedTimeUtc
             }
         );
@@ -282,7 +282,7 @@ public static class ModelBuilderExtensions
                 Id = 2,
                 Code = "EP-CO2-02",
                 Title = "Elevated Cabin CO2 / Headache Protocol",
-                TargetCondition = "Elevated respiratory rate (>18 breaths/min) with persistent frontal headache",
+                TargetCondition = "Elevated respiratory rate (>18 breaths/min) with persistent headache",
                 Severity = EmergencySeverity.Moderate,
                 ImmediateAction = "Move immediately toward an area with active cabin ventilation fans.",
                 StepByStepInstructions = "1. Relocate away from enclosed dead-air corners to a central ventilation duct.\n2. Confirm local air circulation fan is running.\n3. Report readings and symptoms to Ground Monitor.\n4. Check environmental console for CO2 scrubber status.",
@@ -328,7 +328,7 @@ public static class ModelBuilderExtensions
                 Id = 1,
                 Code = "ORTHOSTATIC_INTOLERANCE",
                 Name = "Orthostatic Intolerance",
-                Description = "May be associated with cardiovascular deconditioning and fluid volume redistribution following transition between gravitational environments.",
+                Description = "May be associated with changes in how body fluids are distributed and how the circulatory system adapts to microgravity, especially when returning to gravity.",
                 SelfCareGuidance = "Keep up the mission physical activity program, re-measure blood pressure and record your body position, and report to your monitor.",
                 WhenToContactMonitor = defaultWhenToContact,
                 SourceReference = "Research doc 3.1, 4.1",
@@ -367,7 +367,7 @@ public static class ModelBuilderExtensions
                 Id = 4,
                 Code = "DEHYDRATION_NUTRITION",
                 Name = "Hydration and Nutrition Depletion",
-                Description = "May be associated with reduced circulating plasma volume or inadequate nutritional replenishment during flight.",
+                Description = "May be associated with stored food, nutritional needs, physical activity, and mission conditions that affect fluid and energy balance.",
                 SelfCareGuidance = "Follow the mission nutrition plan and monitor your fluid intake. Report dizziness or fatigue to your monitor.",
                 WhenToContactMonitor = defaultWhenToContact,
                 SourceReference = "Research doc 4.8, 3.2",
@@ -393,7 +393,7 @@ public static class ModelBuilderExtensions
                 Id = 6,
                 Code = "STRESS_ISOLATION",
                 Name = "Stress and Mission Isolation",
-                Description = "May be associated with prolonged confinement, high operational workload, sensory deprivation, and separation from home.",
+                Description = "May be associated with long periods in a small space, distance from family and familiar surroundings, and continuous contact with the same crew.",
                 SelfCareGuidance = "Stay in social contact with your crew, complete your daily self-assessment, try relaxation exercises, and contact support staff.",
                 WhenToContactMonitor = defaultWhenToContact,
                 SourceReference = "Research doc 2.2, 3.8, 4.6",
