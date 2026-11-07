@@ -34,8 +34,8 @@ public class Astronaut : BaseEntity
     /// <summary>
     /// Current mission assignment for the astronaut (nullable).
     /// </summary>
-    public int? MissionId { get; set; }
-    public Mission? Mission { get; set; }
+    public int? MissionId { get; set; } // Foreign Key
+    public Mission? Mission { get; set; } // Navigation
 
     // Active MVP telemetry and workflow collections
     public ICollection<VitalSignReading> VitalSignReadings { get; set; } = new List<VitalSignReading>();

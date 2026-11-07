@@ -25,6 +25,8 @@
   <ItemGroup>
     <Compile Remove="Models\Backlog\**" />
     <None Include="Models\Backlog\**" />
+    <Compile Remove="tests\**" />
+    <None Include="tests\**" />
   </ItemGroup>
 
 </Project>

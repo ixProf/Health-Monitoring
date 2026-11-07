@@ -41,3 +41,16 @@ public class SpaceCondition : BaseEntity
     public ICollection<ConditionVitalSign> ConditionVitalSigns { get; set; } = new List<ConditionVitalSign>();
 }
 
+/*
+
+one to many
+
+many to many
+
+junction - bridge 
+
+Astrunt one to many ->junction table <- one to many missions 
+
+
+
+*/
