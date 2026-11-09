@@ -3,7 +3,13 @@ using AstronautHealthMonitoring.Controllers;
 using AstronautHealthMonitoring.DTOs.Auth;
 using AstronautHealthMonitoring.Hubs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Xunit;
 
 namespace AstronautHealthMonitoring.Tests;
@@ -183,6 +189,39 @@ public class ControllerAuthorizationReflectionTests
         var routeAttrs = controllerType.GetCustomAttributes<RouteAttribute>().ToList();
         Assert.NotEmpty(routeAttrs);
         Assert.Contains(routeAttrs, r => r.Template == "api/[controller]" || r.Template == "api/symptoms" || r.Template == "api/alerts");
+    }
+
+    [Fact]
+    public void ForwardedHeadersOptions_AreConfiguredForReverseProxyBehindIIS()
+    {
+        var services = new ServiceCollection();
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
+        var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<IOptions<ForwardedHeadersOptions>>().Value;
+
+        Assert.True(options.ForwardedHeaders.HasFlag(ForwardedHeaders.XForwardedFor));
+        Assert.True(options.ForwardedHeaders.HasFlag(ForwardedHeaders.XForwardedProto));
+        Assert.Empty(options.KnownNetworks);
+        Assert.Empty(options.KnownProxies);
+    }
+
+    [Fact]
+    public async Task OpenApiDocumentTransformer_SetsServerListToRelativeUrl()
+    {
+        var document = new OpenApiDocument();
+        document.Servers = new List<OpenApiServer>
+        {
+            new() { Url = "/" }
+        };
+
+        Assert.Single(document.Servers);
+        Assert.Equal("/", document.Servers[0].Url);
     }
 }
 

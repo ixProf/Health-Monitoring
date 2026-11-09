@@ -10,6 +10,7 @@ using FluentValidation;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,13 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks()
@@ -35,6 +43,11 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
+        document.Servers = new List<OpenApiServer>
+        {
+            new() { Url = "/" }
+        };
+
         var securityScheme = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
@@ -273,6 +286,8 @@ if (app.Configuration is IConfigurationRoot configRoot)
 }
 
 // Configure HTTP request pipeline
+app.UseForwardedHeaders();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
