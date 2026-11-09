@@ -288,5 +288,28 @@ public class MoodServiceTests : IDisposable
         Assert.NotNull(history);
         Assert.NotEmpty(history.Items);
     }
+
+    [Fact]
+    public async Task RecordMoodAsync_WhenAstronautIsDeactivated_ThrowsInvalidOperationException()
+    {
+        var astro = await _context.Astronauts.FindAsync(1);
+        Assert.NotNull(astro);
+        astro.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new CreateMoodEntryRequest
+        {
+            ClientGeneratedId = Guid.NewGuid(),
+            RecordedAt = DateTime.UtcNow,
+            MoodScore = 7,
+            StressLevel = 3,
+            DominantEmotion = "Calm"
+        };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _moodService.RecordMoodAsync(1, request));
+
+        Assert.Contains("Cannot record mood for deactivated astronaut", ex.Message);
+    }
 }
 

@@ -305,5 +305,31 @@ public class SleepServiceTests : IDisposable
         Assert.NotNull(history);
         Assert.NotEmpty(history.Items);
     }
+
+    [Fact]
+    public async Task RecordSleepAsync_WhenAstronautIsDeactivated_ThrowsInvalidOperationException()
+    {
+        var astro = await _context.Astronauts.FindAsync(1);
+        Assert.NotNull(astro);
+        astro.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new CreateSleepRecordRequest
+        {
+            ClientGeneratedId = Guid.NewGuid(),
+            StartTime = DateTime.UtcNow.AddHours(-8),
+            EndTime = DateTime.UtcNow,
+            RecordedAt = DateTime.UtcNow,
+            LightSleepMinutes = 240,
+            DeepSleepMinutes = 120,
+            RemSleepMinutes = 90,
+            AwakeMinutes = 30
+        };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _sleepService.RecordSleepAsync(1, request));
+
+        Assert.Contains("Cannot record sleep for deactivated astronaut", ex.Message);
+    }
 }
 

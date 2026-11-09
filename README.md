@@ -294,5 +294,6 @@ dotnet run --launch-profile http
 ## Project Documentation
 
 Detailed architecture and design documentation is available in the [`docs/`](./docs) directory:
+- [**Frontend API Documentation & Integration Guide**](./docs/API-Documentation.md): Comprehensive guide for frontend engineers covering authentication lifecycles, full endpoint schemas, ProblemDetails envelopes, SignalR hubs, offline sync protocols, and screen mapping.
 - [**Project Status Report & MVP Audit**](./docs/Project-Status.md): Complete analysis across all 20 system areas, execution roadmap, medical provenance audit, and open architectural decisions.
 - [**Data Model & Relationships Guide**](./docs/Relationships.md): Exhaustive ER diagram, table-by-table foreign key specs, cascade delete behaviors, and offline sync idempotency indexes.

@@ -73,6 +73,11 @@ public class SleepService : ISleepService
             throw new InvalidOperationException($"Astronaut with ID {effectiveAstronautId} does not exist.");
         }
 
+        if (!astronaut.IsActive)
+        {
+            throw new InvalidOperationException($"Cannot record sleep for deactivated astronaut {effectiveAstronautId}.");
+        }
+
         // 3. Compute duration and efficiency
         var startUtc = DateTime.SpecifyKind(request.StartTime, DateTimeKind.Utc);
         var endUtc = DateTime.SpecifyKind(request.EndTime, DateTimeKind.Utc);

@@ -90,6 +90,11 @@ public class VitalSignService : IVitalSignService
             throw new InvalidOperationException($"Astronaut profile with ID {effectiveAstronautId} does not exist.");
         }
 
+        if (!astronaut.IsActive)
+        {
+            throw new InvalidOperationException($"Cannot record vital signs for deactivated astronaut {effectiveAstronautId}.");
+        }
+
         var vitalSignType = await _dbContext.VitalSignTypes.FindAsync(new object[] { request.VitalSignTypeId }, cancellationToken);
         if (vitalSignType == null)
         {

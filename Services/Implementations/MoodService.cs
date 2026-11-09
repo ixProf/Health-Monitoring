@@ -73,6 +73,11 @@ public class MoodService : IMoodService
             throw new InvalidOperationException($"Astronaut with ID {effectiveAstronautId} does not exist.");
         }
 
+        if (!astronaut.IsActive)
+        {
+            throw new InvalidOperationException($"Cannot record mood for deactivated astronaut {effectiveAstronautId}.");
+        }
+
         // 3. Build entity
         var recordedAtUtc = DateTime.SpecifyKind(request.RecordedAt, DateTimeKind.Utc);
 

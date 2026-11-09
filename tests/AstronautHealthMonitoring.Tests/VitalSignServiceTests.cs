@@ -457,5 +457,29 @@ public class VitalSignServiceTests : IDisposable
         var history = await _vitalSignService.GetHistoryAsync(2, null, null, 1, 20);
         Assert.NotNull(history);
     }
+
+    [Fact]
+    public async Task RecordReadingAsync_WhenAstronautIsDeactivated_ThrowsInvalidOperationException()
+    {
+        var astro = await _context.Astronauts.FindAsync(1);
+        Assert.NotNull(astro);
+        astro.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new CreateVitalSignReadingRequest
+        {
+            ClientGeneratedId = Guid.NewGuid(),
+            VitalSignTypeId = 1,
+            Value = 75,
+            MeasurementMethod = "Continuous Telemetry",
+            SensorLocation = "Chest Band",
+            RecordedAt = DateTime.UtcNow
+        };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _vitalSignService.RecordReadingAsync(1, request));
+
+        Assert.Contains("Cannot record vital signs for deactivated astronaut", ex.Message);
+    }
 }
 
