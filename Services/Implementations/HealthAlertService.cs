@@ -183,17 +183,22 @@ public class HealthAlertService : IHealthAlertService
                 throw new InvalidOperationException("A valid target AstronautId must be specified by monitors.");
             }
 
-            var astronautExists = await _dbContext.Astronauts.AnyAsync(a => a.Id == request.AstronautId, cancellationToken);
-            if (!astronautExists)
-            {
-                throw new InvalidOperationException($"Astronaut with ID {request.AstronautId} does not exist.");
-            }
-
             targetAstronautId = request.AstronautId;
         }
         else
         {
             throw new UnauthorizedAccessException("User is not authorized to trigger safety alerts.");
+        }
+
+        var astronaut = await _dbContext.Astronauts.FirstOrDefaultAsync(a => a.Id == targetAstronautId, cancellationToken);
+        if (astronaut == null)
+        {
+            throw new KeyNotFoundException($"Astronaut with ID {targetAstronautId} does not exist.");
+        }
+
+        if (!astronaut.IsActive)
+        {
+            throw new InvalidOperationException($"Astronaut '{astronaut.AstronautCode}' is deactivated and cannot trigger or receive alerts.");
         }
 
         var alert = new HealthAlert

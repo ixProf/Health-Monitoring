@@ -31,5 +31,20 @@ public interface IMissionService
     /// Updates an operational flight mission.
     /// </summary>
     Task<MissionDto> UpdateMissionAsync(int missionId, UpdateMissionRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes a mission if no astronauts are currently assigned to it.
+    /// </summary>
+    Task<bool> DeleteMissionAsync(int missionId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Assigns an astronaut to a mission.
+    /// </summary>
+    Task<bool> AssignAstronautAsync(int missionId, int astronautId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Unassigns an astronaut from a mission.
+    /// </summary>
+    Task<bool> UnassignAstronautAsync(int missionId, int astronautId, CancellationToken cancellationToken = default);
 }
 

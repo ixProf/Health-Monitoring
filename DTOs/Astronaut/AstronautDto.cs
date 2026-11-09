@@ -16,6 +16,7 @@ public class AstronautDto
     public string? EmergencyContactInfo { get; set; }
     public int? MissionId { get; set; }
     public string? MissionName { get; set; }
+    public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

@@ -139,6 +139,11 @@ namespace AstronautHealthMonitoring.Migrations
                     b.Property<double>("HeightCm")
                         .HasColumnType("double precision");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)

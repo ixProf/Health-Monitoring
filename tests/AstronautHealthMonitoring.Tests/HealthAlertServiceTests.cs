@@ -150,6 +150,51 @@ public class HealthAlertServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task TriggerManualAlertAsync_WhenAstronautIsDeactivated_ThrowsInvalidOperationException()
+    {
+        var astronaut = await _context.Astronauts.FirstAsync(a => a.Id == 1);
+        astronaut.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new TriggerManualAlertRequest
+        {
+            AstronautId = 1,
+            Severity = AlertSeverity.MedicalAttention,
+            Title = "Deactivated Astronaut Alert",
+            Message = "Test alert"
+        };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _healthAlertService.TriggerManualAlertAsync(request));
+
+        Assert.Contains("deactivated", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TriggerManualAlertAsync_WhenMonitorTargetsDeactivatedAstronaut_ThrowsInvalidOperationException()
+    {
+        _currentUserService.Role = UserRoles.Monitor;
+        _currentUserService.AstronautId = null;
+
+        var astronaut = await _context.Astronauts.FirstAsync(a => a.Id == 2);
+        astronaut.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new TriggerManualAlertRequest
+        {
+            AstronautId = 2,
+            Severity = AlertSeverity.Emergency,
+            Title = "Monitor Target Deactivated Alert",
+            Message = "Test alert"
+        };
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _healthAlertService.TriggerManualAlertAsync(request));
+
+        Assert.Contains("deactivated", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task AcknowledgeAlertAsync_WhenCalledByMonitor_Succeeds_AndUpdatesFields()
     {
         // Arrange: Create active alert

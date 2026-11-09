@@ -200,12 +200,60 @@ dotnet test --logger "console;verbosity=normal"
 | :--- | :--- | :--- |
 | **HTTP Base URL** | `http://localhost:5256` | Public |
 | **HTTPS Base URL** | `https://localhost:7012` | Public |
+| **Health Check** | `GET /health` | Public (Anonymous DB probe) |
 | **OpenAPI v1 Document** | `http://localhost:5256/openapi/v1.json` | Development Only |
+| **Swagger UI** | `http://localhost:5256/swagger` | Development Only |
 | **Auth: Login** | `POST /api/auth/login` | Public (Rate-limited: 5 requests/min) |
 | **Auth: Refresh Token** | `POST /api/auth/refresh` | Public |
 | **Auth: Revoke Token** | `POST /api/auth/revoke` | Public |
 | **Auth: Current User** | `GET /api/auth/me` | Authenticated (`Bearer`) |
-| **SignalR Hubs (Upcoming)** | `/hubs/*?access_token=...` | JWT Bearer Query-String |
+| **Vital Signs: Record** | `POST /api/vitalsigns` | AstronautOnly |
+| **Vital Signs: Latest** | `GET /api/vitalsigns/latest` | Authenticated (scoped) |
+| **Vital Signs: History** | `GET /api/vitalsigns/history` | Authenticated (scoped) |
+| **Vital Signs: Get By Id** | `GET /api/vitalsigns/{id}` | Authenticated (scoped) |
+| **Alerts: List** | `GET /api/alerts` | Authenticated (scoped) |
+| **Alerts: Get By Id** | `GET /api/alerts/{id}` | Authenticated (scoped) |
+| **Alerts: Trigger Manual** | `POST /api/alerts/manual` | Authenticated (scoped, rate-limited) |
+| **Alerts: Acknowledge** | `POST /api/alerts/{id}/acknowledge` | MonitorOnly |
+| **Alerts: Resolve** | `POST /api/alerts/{id}/resolve` | MonitorOnly |
+| **Sleep: Record** | `POST /api/sleep` | AstronautOnly |
+| **Sleep: Latest** | `GET /api/sleep/latest` | Authenticated (scoped) |
+| **Sleep: History** | `GET /api/sleep/history` | Authenticated (scoped) |
+| **Sleep: Get By Id** | `GET /api/sleep/{id}` | Authenticated (scoped) |
+| **Mood: Record** | `POST /api/mood` | AstronautOnly |
+| **Mood: Latest** | `GET /api/mood/latest` | Authenticated (scoped) |
+| **Mood: History** | `GET /api/mood/history` | Authenticated (scoped) |
+| **Mood: Get By Id** | `GET /api/mood/{id}` | Authenticated (scoped) |
+| **Astronauts: Provision** | `POST /api/astronauts` | MonitorOnly |
+| **Astronauts: List** | `GET /api/astronauts` | MonitorOnly |
+| **Astronauts: Current Me** | `GET /api/astronauts/me` | AstronautOnly |
+| **Astronauts: Get By Id** | `GET /api/astronauts/{id}` | Authenticated (scoped) |
+| **Astronauts: Update** | `PUT /api/astronauts/{id}` | MonitorOnly |
+| **Astronauts: Deactivate** | `PATCH /api/astronauts/{id}/deactivate` | MonitorOnly |
+| **Missions: List** | `GET /api/missions` | Authenticated |
+| **Missions: Get By Id** | `GET /api/missions/{id}` | Authenticated |
+| **Missions: Create** | `POST /api/missions` | MonitorOnly |
+| **Missions: Update** | `PUT /api/missions/{id}` | MonitorOnly |
+| **Missions: Delete** | `DELETE /api/missions/{id}` | MonitorOnly |
+| **Missions: Assign** | `POST /api/missions/{id}/astronauts` | MonitorOnly |
+| **Missions: Unassign** | `DELETE /api/missions/{id}/astronauts/{astronautId}` | MonitorOnly |
+| **Dashboard: Monitor** | `GET /api/dashboard/monitor` | MonitorOnly |
+| **Dashboard: Snapshot** | `GET /api/dashboard/astronauts/{id}` | MonitorOnly |
+| **Dashboard: My Dashboard** | `GET /api/dashboard/me` | AstronautOnly |
+| **Recommendations: List** | `GET /api/recommendations` | Authenticated (scoped) |
+| **Recommendations: Get By Id** | `GET /api/recommendations/{id}` | Authenticated (scoped) |
+| **Recommendations: Create** | `POST /api/recommendations` | MonitorOnly |
+| **Recommendations: Update Status** | `PATCH /api/recommendations/{id}/status` | Authenticated (scoped) |
+| **Symptoms: Catalog** | `GET /api/symptoms` | Authenticated |
+| **Symptoms: Guidance** | `GET /api/symptoms/guidance` | Authenticated |
+| **Symptoms: Assess** | `POST /api/symptoms/assess` | Authenticated (scoped) |
+| **Chat: Messages** | `GET /api/chat/messages` | Authenticated (scoped) |
+| **Chat: Send Message** | `POST /api/chat/messages` | Authenticated (scoped) |
+| **Chat: Mark As Read** | `POST /api/chat/messages/{id}/read` | Authenticated (scoped) |
+| **Chat: Unread Count** | `GET /api/chat/unread-count` | Authenticated (scoped) |
+| **Sync: Telemetry Batch** | `POST /api/sync` | AstronautOnly |
+| **SignalR Alerts Hub** | `/hubs/alerts?access_token=...` | Authenticated (`Bearer`) |
+| **SignalR Chat Hub** | `/hubs/chat?access_token=...` | Authenticated (`Bearer`) |
 
 ---
 

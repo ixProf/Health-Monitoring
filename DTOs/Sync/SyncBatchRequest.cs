@@ -5,6 +5,22 @@ using AstronautHealthMonitoring.DTOs.VitalSigns;
 
 namespace AstronautHealthMonitoring.DTOs.Sync;
 
+public enum SyncItemStatus
+{
+    Accepted,
+    Duplicate,
+    Rejected
+}
+
+public class SyncItemResultDto
+{
+    public Guid ClientGeneratedId { get; set; }
+    public string ItemType { get; set; } = string.Empty; // "VitalSign", "Sleep", "Mood", "Chat"
+    public SyncItemStatus Status { get; set; }
+    public string? Reason { get; set; }
+    public int? ServerId { get; set; }
+}
+
 public class SyncBatchRequest
 {
     public DateTime DeviceSyncTime { get; set; }
@@ -25,4 +41,5 @@ public class SyncBatchResponse
     public int DuplicatesIgnoredCount { get; set; }
     public DateTime ServerSyncedAt { get; set; }
     public List<string> Errors { get; set; } = new();
+    public List<SyncItemResultDto> ItemResults { get; set; } = new();
 }

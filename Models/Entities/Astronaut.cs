@@ -38,6 +38,12 @@ public class Astronaut : BaseEntity
     public int? MissionId { get; set; } // Foreign Key
     public Mission? Mission { get; set; } // Navigation
 
+    /// <summary>
+    /// Indicates whether the astronaut's flight profile is active.
+    /// Deactivated astronauts have their Identity account locked and refresh tokens revoked.
+    /// </summary>
+    public bool IsActive { get; set; } = true;
+
     // Active MVP telemetry and workflow collections
     public ICollection<VitalSignReading> VitalSignReadings { get; set; } = new List<VitalSignReading>();
     public ICollection<SleepRecord> SleepRecords { get; set; } = new List<SleepRecord>();

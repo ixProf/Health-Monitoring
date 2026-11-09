@@ -7,6 +7,18 @@ public class CreateAstronautRequestValidator : AbstractValidator<CreateAstronaut
 {
     public CreateAstronautRequestValidator()
     {
+        RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username is required.")
+            .MaximumLength(50);
+
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage("Email is required.")
+            .EmailAddress().WithMessage("A valid email address is required.")
+            .MaximumLength(256);
+
+        RuleFor(x => x.InitialPassword)
+            .NotEmpty().WithMessage("InitialPassword is required.");
+
         RuleFor(x => x.AstronautCode)
             .NotEmpty().WithMessage("AstronautCode is required.")
             .MaximumLength(50);

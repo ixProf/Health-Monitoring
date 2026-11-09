@@ -200,6 +200,27 @@ public class ControllerAuthorizationTests : IDisposable
     }
 
     [Fact]
+    public async Task HealthAlertsController_TriggerManualAlert_WhenDeactivated_Returns409Conflict()
+    {
+        var astronaut = await _context.Astronauts.FirstAsync(a => a.Id == 1);
+        astronaut.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        var request = new TriggerManualAlertRequest
+        {
+            AstronautId = 1,
+            Severity = AlertSeverity.MedicalAttention,
+            Title = "Manual Dizziness",
+            Message = "Crew reported dizziness in airlock"
+        };
+
+        var actionResult = await _healthAlertsController.TriggerManualAlert(request, CancellationToken.None);
+
+        var conflictResult = Assert.IsType<ConflictObjectResult>(actionResult);
+        Assert.Equal(StatusCodes.Status409Conflict, conflictResult.StatusCode);
+    }
+
+    [Fact]
     public async Task HealthAlertsController_AcknowledgeAlert_WhenMonitor_Returns200OK()
     {
         // Create an alert

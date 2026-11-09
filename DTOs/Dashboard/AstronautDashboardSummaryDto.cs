@@ -13,6 +13,7 @@ public class AstronautDashboardSummaryDto
     public string FullName { get; set; } = string.Empty;
     public string AstronautCode { get; set; } = string.Empty;
     public string? MissionName { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public VitalSignStatus OverallStatus { get; set; } = VitalSignStatus.Routine;
     public DateTime? LastSyncAt { get; set; }

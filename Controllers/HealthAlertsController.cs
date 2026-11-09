@@ -6,11 +6,12 @@ using AstronautHealthMonitoring.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AstronautHealthMonitoring.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/alerts")]
 public class HealthAlertsController : ControllerBase
 {
     private readonly IHealthAlertService _healthAlertService;
@@ -109,10 +110,13 @@ public class HealthAlertsController : ControllerBase
     /// </summary>
     [HttpPost("manual")]
     [Authorize(Policy = AuthPolicies.Authenticated)]
+    [EnableRateLimiting("ManualAlertLimiter")]
     [ProducesResponseType(typeof(HealthAlertDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> TriggerManualAlert([FromBody] TriggerManualAlertRequest request, CancellationToken cancellationToken)
     {
         var validationResult = await _manualAlertValidator.ValidateAsync(request, cancellationToken);
@@ -130,9 +134,13 @@ public class HealthAlertsController : ControllerBase
         {
             return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
         }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return Conflict(new { message = ex.Message });
         }
     }
 

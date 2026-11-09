@@ -58,6 +58,10 @@ public class AstronautConfiguration : IEntityTypeConfiguration<Astronaut>
         builder.Property(a => a.EmergencyContactInfo)
             .HasMaxLength(500);
 
+        builder.Property(a => a.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+
         // Relationship: Astronaut -> Mission (Nullable, SetNull on delete)
         builder.HasOne(a => a.Mission)
             .WithMany(m => m.Astronauts)

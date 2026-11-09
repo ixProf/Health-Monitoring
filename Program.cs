@@ -19,8 +19,18 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
-builder.Services.AddSignalR();
+builder.Services.AddHealthChecks()
+    .AddCheck<DbHealthCheck>("Database");
+
+var keepAliveSeconds = builder.Configuration.GetValue("Hubs:KeepAliveSeconds", 15);
+var clientTimeoutSeconds = builder.Configuration.GetValue("Hubs:ClientTimeoutSeconds", 30);
+builder.Services.AddSignalR(options =>
+{
+    options.KeepAliveInterval = TimeSpan.FromSeconds(keepAliveSeconds);
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(clientTimeoutSeconds);
+});
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -171,11 +181,16 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 5. Configure Rate Limiter for Login Endpoint from Configuration
+// 5. Configure Rate Limiter for Login and Manual Alert Endpoints from Configuration
 var rateLimitSection = builder.Configuration.GetSection("RateLimiting:Login");
 var permitLimit = rateLimitSection.GetValue("PermitLimit", 5);
 var windowMinutes = rateLimitSection.GetValue("WindowMinutes", 1.0);
 var queueLimit = rateLimitSection.GetValue("QueueLimit", 0);
+
+var alertRateLimitSection = builder.Configuration.GetSection("RateLimiting:ManualAlert");
+var alertPermitLimit = alertRateLimitSection.GetValue("PermitLimit", 5);
+var alertWindowMinutes = alertRateLimitSection.GetValue("WindowMinutes", 1.0);
+var alertQueueLimit = alertRateLimitSection.GetValue("QueueLimit", 0);
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -186,6 +201,13 @@ builder.Services.AddRateLimiter(options =>
         opt.Window = TimeSpan.FromMinutes(windowMinutes);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         opt.QueueLimit = queueLimit;
+    });
+    options.AddFixedWindowLimiter("ManualAlertLimiter", opt =>
+    {
+        opt.PermitLimit = alertPermitLimit;
+        opt.Window = TimeSpan.FromMinutes(alertWindowMinutes);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = alertQueueLimit;
     });
 });
 
@@ -200,6 +222,14 @@ builder.Services.AddScoped<IHealthAlertService, HealthAlertService>();
 builder.Services.AddScoped<IAlertNotifier, SignalRAlertNotifier>();
 builder.Services.AddScoped<ISleepService, SleepService>();
 builder.Services.AddScoped<IMoodService, MoodService>();
+builder.Services.AddScoped<IAstronautService, AstronautService>();
+builder.Services.AddScoped<IMissionService, MissionService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<ISymptomGuidanceService, SymptomGuidanceService>();
+builder.Services.AddScoped<IChatNotifier, SignalRChatNotifier>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<ISyncService, SyncService>();
 
 var app = builder.Build();
 
@@ -257,11 +287,14 @@ app.UseHttpsRedirection();
 app.UseCors("DefaultCorsPolicy");
 app.UseRateLimiter();
 
+app.MapHealthChecks("/health").AllowAnonymous();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<AlertsHub>("/hubs/alerts");
+app.MapHub<ChatHub>("/hubs/chat");
 
 // 8. Run Identity Demo User Seeding (Development environment only or when SeedData:Enabled is true)
 var seedingEnabled = app.Environment.IsDevelopment() || app.Configuration.GetValue("SeedData:Enabled", false);

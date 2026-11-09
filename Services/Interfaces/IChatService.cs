@@ -18,8 +18,22 @@ public interface IChatService
     Task<IReadOnlyList<ChatMessageDto>> GetThreadHistoryAsync(int astronautId, int take = 50, DateTime? beforeUtc = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Loads paged communication messages for an astronaut support thread.
+    /// </summary>
+    Task<IReadOnlyList<ChatMessageDto>> GetMessagesPagedAsync(int astronautId, int pageNumber = 1, int pageSize = 50, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Marks a specific message as read.
+    /// </summary>
+    Task<ChatMessageDto> MarkAsReadAsync(int messageId, string readerUserId, string readerRole, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Marks unread messages in an astronaut support thread as read.
     /// </summary>
     Task<bool> MarkThreadAsReadAsync(int astronautId, string readerUserId, CancellationToken cancellationToken = default);
-}
 
+    /// <summary>
+    /// Retrieves count of unread messages for an astronaut thread.
+    /// </summary>
+    Task<int> GetUnreadCountAsync(int astronautId, string readerRole, CancellationToken cancellationToken = default);
+}

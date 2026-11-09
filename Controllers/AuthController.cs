@@ -24,6 +24,7 @@ public class AuthController : ControllerBase
     /// Rate limited to mitigate brute-force and credential-stuffing attacks.
     /// </summary>
     [HttpPost("login")]
+    [AllowAnonymous]
     [EnableRateLimiting("LoginLimiter")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -45,6 +46,7 @@ public class AuthController : ControllerBase
     /// Validates an active refresh token, issues rotated tokens, and invalidates the previous refresh token.
     /// </summary>
     [HttpPost("refresh")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -64,8 +66,8 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Revokes active refresh token(s) for the authenticated session upon user logout.
     /// </summary>
-    [Authorize]
     [HttpPost("logout")]
+    [Authorize(Policy = AuthPolicies.Authenticated)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Logout([FromBody] LogoutRequest? request, CancellationToken cancellationToken)
@@ -78,8 +80,8 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Returns the identity profile, roles, and linked astronaut metadata for the current authenticated user.
     /// </summary>
-    [Authorize]
     [HttpGet("me")]
+    [Authorize(Policy = AuthPolicies.Authenticated)]
     [ProducesResponseType(typeof(CurrentUserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
