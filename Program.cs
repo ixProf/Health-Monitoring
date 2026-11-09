@@ -2,6 +2,7 @@ using System.Text;
 using System.Threading.RateLimiting;
 using AstronautHealthMonitoring.Data;
 using AstronautHealthMonitoring.DTOs.Auth;
+using AstronautHealthMonitoring.Hubs;
 using AstronautHealthMonitoring.Models.Entities;
 using AstronautHealthMonitoring.Services.Implementations;
 using AstronautHealthMonitoring.Services.Interfaces;
@@ -13,12 +14,45 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        var securityScheme = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "Enter your JWT token to authorize requests."
+        };
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes.Add("Bearer", securityScheme);
+
+        var securityRequirement = new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            }] = Array.Empty<string>()
+        };
+
+        document.SecurityRequirements.Add(securityRequirement);
+
+        return Task.CompletedTask;
+    });
+});
 
 // Register Mapster configuration scanning this assembly and scoped IMapper
 var typeAdapterConfig = new TypeAdapterConfig();
@@ -155,12 +189,17 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
-// 6. Register Identity, Auth, and Context Services
+// 6. Register Identity, Auth, Context, and Clinical Services
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIdentityDataSeeder, IdentityDataSeeder>();
+builder.Services.AddScoped<IVitalSignService, VitalSignService>();
+builder.Services.AddScoped<IHealthAlertService, HealthAlertService>();
+builder.Services.AddScoped<IAlertNotifier, SignalRAlertNotifier>();
+builder.Services.AddScoped<ISleepService, SleepService>();
+builder.Services.AddScoped<IMoodService, MoodService>();
 
 var app = builder.Build();
 
@@ -207,6 +246,11 @@ if (app.Configuration is IConfigurationRoot configRoot)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Astronaut Health Monitoring API v1");
+        options.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
@@ -217,6 +261,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<AlertsHub>("/hubs/alerts");
 
 // 8. Run Identity Demo User Seeding (Development environment only or when SeedData:Enabled is true)
 var seedingEnabled = app.Environment.IsDevelopment() || app.Configuration.GetValue("SeedData:Enabled", false);
