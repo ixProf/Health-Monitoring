@@ -5,7 +5,6 @@ namespace AstronautHealthMonitoring.DTOs.VitalSigns;
 public class CreateVitalSignReadingRequest
 {
     public Guid ClientGeneratedId { get; set; }
-    public int AstronautId { get; set; }
     public int VitalSignTypeId { get; set; }
 
     public double Value { get; set; }

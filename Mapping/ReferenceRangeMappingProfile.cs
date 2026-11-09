@@ -1,26 +1,26 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.ReferenceRanges;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class ReferenceRangeMappingProfile : Profile
+public class ReferenceRangeMappings : IRegister
 {
-    public ReferenceRangeMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<ReferenceRange, ReferenceRangeDto>()
-            .ForMember(d => d.VitalSignTypeCode, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Code : string.Empty));
+        config.NewConfig<ReferenceRange, ReferenceRangeDto>()
+            .Map(dest => dest.VitalSignTypeCode, src => src.VitalSignType != null ? src.VitalSignType.Code : string.Empty);
 
-        CreateMap<UpdateReferenceRangeRequest, ReferenceRange>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignTypeId, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignType, opt => opt.Ignore())
-            .ForMember(d => d.ApplicableGender, opt => opt.Ignore())
-            .ForMember(d => d.MinAge, opt => opt.Ignore())
-            .ForMember(d => d.MaxAge, opt => opt.Ignore())
-            .ForMember(d => d.ReviewedBy, opt => opt.Ignore())
-            .ForMember(d => d.ReviewedAt, opt => opt.Ignore());
+        config.NewConfig<UpdateReferenceRangeRequest, ReferenceRange>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.VitalSignTypeId)
+            .Ignore(dest => dest.VitalSignType)
+            .Ignore(dest => dest.ApplicableGender)
+            .Ignore(dest => dest.MinAge)
+            .Ignore(dest => dest.MaxAge)
+            .Ignore(dest => dest.ReviewedBy)
+            .Ignore(dest => dest.ReviewedAt);
     }
 }

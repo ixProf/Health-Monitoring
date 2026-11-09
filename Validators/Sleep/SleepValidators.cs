@@ -15,9 +15,6 @@ public class CreateSleepRecordRequestValidator : AbstractValidator<CreateSleepRe
         RuleFor(x => x.ClientGeneratedId)
             .NotEmpty().WithMessage("ClientGeneratedId is required and cannot be empty.");
 
-        RuleFor(x => x.AstronautId)
-            .GreaterThan(0).WithMessage("AstronautId must be greater than 0.");
-
         RuleFor(x => x.EndTime)
             .GreaterThan(x => x.StartTime)
             .WithMessage("EndTime must be after StartTime.");

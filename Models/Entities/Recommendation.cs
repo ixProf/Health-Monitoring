@@ -4,7 +4,7 @@ using AstronautHealthMonitoring.Models.Enums;
 namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
-/// Guidance generated automatically or by flight surgeons for the astronaut.
+/// Guidance generated automatically or by ground monitors for the astronaut.
 /// Always explains the physiological 'Reason' behind each recommendation.
 /// </summary>
 public class Recommendation : BaseEntity
@@ -18,7 +18,7 @@ public class Recommendation : BaseEntity
 
     /// <summary>
     /// Physiological or operational reason explaining why this recommendation was given.
-    /// Crucial for astronaut buy-in and non-doctor understanding.
+    /// Crucial for astronaut buy-in and clear understanding.
     /// </summary>
     public string Reason { get; set; } = string.Empty;
 

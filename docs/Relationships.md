@@ -19,7 +19,7 @@ It is constructed directly from the entity definitions in `Models/Entities/`, th
 | `Astronauts` | `ChatMessages` | One-to-Many (1:N) | `ChatMessage.AstronautId` | **No** | `Cascade` | Acts as the thread key for ground monitor and astronaut bidirectional communication history. |
 | `VitalSignTypes` | `VitalSignReadings` | One-to-Many (1:N) | `VitalSignReading.VitalSignTypeId` | **No** | `Restrict` | Classifies telemetry by metric type (HR, BP, SpO2, etc.); prevents deleting active types. |
 | `VitalSignTypes` | `ReferenceRanges` | One-to-Many (1:N) | `ReferenceRange.VitalSignTypeId` | **No** | `Cascade` | Defines clinical and operational threshold limits (routine vs emergency) for the vital type. |
-| `VitalSignTypes` | `HealthMetricGuides` | One-to-One (1:1) | `HealthMetricGuide.VitalSignTypeId` | **No** | `Cascade` | Provides 5-principle educational guidance on measurement and non-doctor interpretation. |
+| `VitalSignTypes` | `HealthMetricGuides` | One-to-One (1:1) | `HealthMetricGuide.VitalSignTypeId` | **No** | `Cascade` | Provides 5-principle educational guidance on measurement and plain-language interpretation. |
 | `VitalSignReadings` | `HealthAlerts` | One-to-Many (1:N) | `HealthAlert.VitalSignReadingId` | **Yes** | `SetNull` | References the exact telemetry reading that triggered the alert; preserves alert if reading is purged. |
 | `EmergencyProcedures` | `HealthAlerts` | One-to-Many (1:N) | `HealthAlert.EmergencyProcedureId` | **Yes** | `SetNull` | Attaches immediate emergency countermeasure protocols to critical alerts. |
 | `SpaceConditions` | `ConditionSymptoms` | One-to-Many (1:N) | `ConditionSymptom.ConditionId` | **No** | `Cascade` | Associative join linking space conditions to characteristic symptoms with weights. |
@@ -524,7 +524,7 @@ The following entity pairs intentionally do NOT maintain direct foreign key rela
    - *Design Reason*: Enables offline queuing of messages and uniform thread management without requiring local user rows to exist in edge environments.
 3. **`ChatMessage` and `Mission`**:
    - Messages are partitioned strictly by `AstronautId` (`IX_ChatMessages_AstronautId_SentAt`), not by `MissionId`.
-   - *Design Reason*: Each astronaut maintains one lifelong, unified health and medical support thread with flight surgeons and ground medical monitors that persists across mission assignments, pre-flight training, and post-flight rehabilitation.
+   - *Design Reason*: Each astronaut maintains one lifelong, unified health and operational support thread with ground monitors that persists across mission assignments, pre-flight training, and post-flight rehabilitation.
 4. **`HealthAlert` and `SpaceCondition`**:
    - `HealthAlert` contains foreign keys only to `VitalSignReading` and `EmergencyProcedure`, but never to `SpaceCondition`.
    - *Design Reason*: The alert engine is strictly deterministic and threshold-based. Safety alerts notify staff of physiological threshold breaches; they never assign diagnostic labels or link to spaceflight adaptation conditions. Space condition matching is an educational, non-diagnostic guidance tool handled separately in the Symptom Guidance module.
@@ -563,7 +563,7 @@ The following entities and relationships exist in backlog specifications (`Model
    - **Planned Relationships**:
      - `Astronaut` -> `PersonalBaseline` (One-to-Many).
      - `VitalSignType` -> `PersonalBaseline` (One-to-Many).
-     - Allows flight surgeons to establish personalized baseline resting heart rates, blood pressure, and circadian norms per astronaut.
+     - Allows ground monitors to establish personalized baseline resting heart rates, blood pressure, and circadian norms per astronaut.
 3. **`ApplicationUser` / Identity User (`Microsoft.AspNetCore.Identity`)**:
    - **Target Phase**: Phase 4 (Authentication & Role-Based Access Control).
    - **Planned Relationships**:

@@ -15,9 +15,6 @@ public class SendChatMessageRequestValidator : AbstractValidator<SendChatMessage
         RuleFor(x => x.ClientGeneratedId)
             .NotEmpty().WithMessage("ClientGeneratedId is required and cannot be empty.");
 
-        RuleFor(x => x.AstronautId)
-            .GreaterThan(0).WithMessage("AstronautId must be greater than 0.");
-
         RuleFor(x => x.Content)
             .NotEmpty().WithMessage("Message content cannot be empty.")
             .MaximumLength(4000);

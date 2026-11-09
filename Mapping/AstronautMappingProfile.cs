@@ -1,42 +1,45 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Astronaut;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class AstronautMappingProfile : Profile
+public class AstronautMappings : IRegister
 {
-    public AstronautMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Astronaut, AstronautDto>()
-            .ForMember(d => d.MissionName, opt => opt.MapFrom(s => s.Mission != null ? s.Mission.Name : null));
+        config.NewConfig<Astronaut, AstronautDto>()
+            .Map(dest => dest.MissionName, src => src.Mission != null ? src.Mission.Name : null);
 
-        CreateMap<CreateAstronautRequest, Astronaut>()
-            .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}".Trim()))
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Mission, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignReadings, opt => opt.Ignore())
-            .ForMember(d => d.SleepRecords, opt => opt.Ignore())
-            .ForMember(d => d.MoodEntries, opt => opt.Ignore())
-            .ForMember(d => d.Recommendations, opt => opt.Ignore())
-            .ForMember(d => d.HealthAlerts, opt => opt.Ignore())
-            .ForMember(d => d.ChatMessages, opt => opt.Ignore());
+        config.NewConfig<CreateAstronautRequest, Astronaut>()
+            .Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}".Trim())
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.UserId)
+            .Ignore(dest => dest.User)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.Mission)
+            .Ignore(dest => dest.VitalSignReadings)
+            .Ignore(dest => dest.SleepRecords)
+            .Ignore(dest => dest.MoodEntries)
+            .Ignore(dest => dest.Recommendations)
+            .Ignore(dest => dest.HealthAlerts)
+            .Ignore(dest => dest.ChatMessages);
 
-        CreateMap<UpdateAstronautRequest, Astronaut>()
-            .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}".Trim()))
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.UserId, opt => opt.Ignore())
-            .ForMember(d => d.AstronautCode, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Mission, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignReadings, opt => opt.Ignore())
-            .ForMember(d => d.SleepRecords, opt => opt.Ignore())
-            .ForMember(d => d.MoodEntries, opt => opt.Ignore())
-            .ForMember(d => d.Recommendations, opt => opt.Ignore())
-            .ForMember(d => d.HealthAlerts, opt => opt.Ignore())
-            .ForMember(d => d.ChatMessages, opt => opt.Ignore());
+        config.NewConfig<UpdateAstronautRequest, Astronaut>()
+            .Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}".Trim())
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.UserId)
+            .Ignore(dest => dest.User)
+            .Ignore(dest => dest.AstronautCode)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.Mission)
+            .Ignore(dest => dest.VitalSignReadings)
+            .Ignore(dest => dest.SleepRecords)
+            .Ignore(dest => dest.MoodEntries)
+            .Ignore(dest => dest.Recommendations)
+            .Ignore(dest => dest.HealthAlerts)
+            .Ignore(dest => dest.ChatMessages);
     }
 }

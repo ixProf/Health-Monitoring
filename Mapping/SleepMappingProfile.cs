@@ -1,21 +1,22 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Sleep;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class SleepMappingProfile : Profile
+public class SleepMappings : IRegister
 {
-    public SleepMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<SleepRecord, SleepRecordDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty));
+        config.NewConfig<SleepRecord, SleepRecordDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty);
 
-        CreateMap<CreateSleepRecordRequest, SleepRecord>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronaut, opt => opt.Ignore())
-            .ForMember(d => d.DurationHours, opt => opt.Ignore());
+        config.NewConfig<CreateSleepRecordRequest, SleepRecord>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.AstronautId)
+            .Ignore(dest => dest.Astronaut)
+            .Ignore(dest => dest.DurationHours);
     }
 }

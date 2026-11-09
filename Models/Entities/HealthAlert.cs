@@ -39,7 +39,7 @@ public class HealthAlert : BaseEntity
     public string Reason { get; set; } = string.Empty;
 
     /// <summary>
-    /// Clear non-doctor instructions on what to check or do right now.
+    /// Actionable instructions on what to check or do right now.
     /// </summary>
     public string ActionRequired { get; set; } = string.Empty;
 

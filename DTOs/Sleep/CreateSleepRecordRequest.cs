@@ -5,7 +5,6 @@ namespace AstronautHealthMonitoring.DTOs.Sleep;
 public class CreateSleepRecordRequest
 {
     public Guid ClientGeneratedId { get; set; }
-    public int AstronautId { get; set; }
 
     public DateTime RecordedAt { get; set; }
     public DateTime StartTime { get; set; }

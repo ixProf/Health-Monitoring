@@ -1,22 +1,22 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Recommendations;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class RecommendationMappingProfile : Profile
+public class RecommendationMappings : IRegister
 {
-    public RecommendationMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Recommendation, RecommendationDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty));
+        config.NewConfig<Recommendation, RecommendationDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty);
 
-        CreateMap<CreateRecommendationRequest, Recommendation>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronaut, opt => opt.Ignore())
-            .ForMember(d => d.GeneratedAt, opt => opt.Ignore())
-            .ForMember(d => d.Status, opt => opt.Ignore());
+        config.NewConfig<CreateRecommendationRequest, Recommendation>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.Astronaut)
+            .Ignore(dest => dest.GeneratedAt)
+            .Ignore(dest => dest.Status);
     }
 }

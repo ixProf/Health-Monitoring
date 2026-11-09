@@ -1,26 +1,26 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.SymptomGuidance;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class SymptomGuidanceMappingProfile : Profile
+public class SymptomGuidanceMappings : IRegister
 {
-    public SymptomGuidanceMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Symptom, SymptomDto>();
+        config.NewConfig<Symptom, SymptomDto>();
 
-        CreateMap<ConditionSymptom, ConditionSymptomDto>()
-            .ForMember(d => d.SymptomCode, opt => opt.MapFrom(s => s.Symptom != null ? s.Symptom.Code : string.Empty))
-            .ForMember(d => d.SymptomName, opt => opt.MapFrom(s => s.Symptom != null ? s.Symptom.Name : string.Empty))
-            .ForMember(d => d.IsRedFlag, opt => opt.MapFrom(s => s.Symptom != null && s.Symptom.IsRedFlag));
+        config.NewConfig<ConditionSymptom, ConditionSymptomDto>()
+            .Map(dest => dest.SymptomCode, src => src.Symptom != null ? src.Symptom.Code : string.Empty)
+            .Map(dest => dest.SymptomName, src => src.Symptom != null ? src.Symptom.Name : string.Empty)
+            .Map(dest => dest.IsRedFlag, src => src.Symptom != null && src.Symptom.IsRedFlag);
 
-        CreateMap<ConditionVitalSign, ConditionVitalSignDto>()
-            .ForMember(d => d.VitalSignTypeCode, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Code : string.Empty))
-            .ForMember(d => d.VitalSignTypeName, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Name : string.Empty));
+        config.NewConfig<ConditionVitalSign, ConditionVitalSignDto>()
+            .Map(dest => dest.VitalSignTypeCode, src => src.VitalSignType != null ? src.VitalSignType.Code : string.Empty)
+            .Map(dest => dest.VitalSignTypeName, src => src.VitalSignType != null ? src.VitalSignType.Name : string.Empty);
 
-        CreateMap<SpaceCondition, SpaceConditionDto>()
-            .ForMember(d => d.AssociatedSymptoms, opt => opt.MapFrom(s => s.ConditionSymptoms))
-            .ForMember(d => d.AssociatedVitalSigns, opt => opt.MapFrom(s => s.ConditionVitalSigns));
+        config.NewConfig<SpaceCondition, SpaceConditionDto>()
+            .Map(dest => dest.AssociatedSymptoms, src => src.ConditionSymptoms)
+            .Map(dest => dest.AssociatedVitalSigns, src => src.ConditionVitalSigns);
     }
 }

@@ -3,7 +3,7 @@ using AstronautHealthMonitoring.Models.Common;
 namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
-/// Educational and practical guidance for astronauts who are not medical doctors.
+/// Educational and practical guidance for astronauts written in clear, accessible language.
 /// Direct implementation of the 5 Core Design Principles for health metrics.
 /// </summary>
 public class HealthMetricGuide : BaseEntity

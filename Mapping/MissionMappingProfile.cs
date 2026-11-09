@@ -1,27 +1,27 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Missions;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class MissionMappingProfile : Profile
+public class MissionMappings : IRegister
 {
-    public MissionMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<Mission, MissionDto>()
-            .ForMember(d => d.AstronautsCount, opt => opt.MapFrom(s => s.Astronauts.Count));
+        config.NewConfig<Mission, MissionDto>()
+            .Map(dest => dest.AstronautsCount, src => src.Astronauts.Count);
 
-        CreateMap<CreateMissionRequest, Mission>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronauts, opt => opt.Ignore());
+        config.NewConfig<CreateMissionRequest, Mission>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.Astronauts);
 
-        CreateMap<UpdateMissionRequest, Mission>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Code, opt => opt.Ignore())
-            .ForMember(d => d.Astronauts, opt => opt.Ignore());
+        config.NewConfig<UpdateMissionRequest, Mission>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.Code)
+            .Ignore(dest => dest.Astronauts);
     }
 }

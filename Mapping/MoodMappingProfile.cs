@@ -1,20 +1,21 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Mood;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class MoodMappingProfile : Profile
+public class MoodMappings : IRegister
 {
-    public MoodMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<MoodEntry, MoodEntryDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty));
+        config.NewConfig<MoodEntry, MoodEntryDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty);
 
-        CreateMap<CreateMoodEntryRequest, MoodEntry>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronaut, opt => opt.Ignore());
+        config.NewConfig<CreateMoodEntryRequest, MoodEntry>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.AstronautId)
+            .Ignore(dest => dest.Astronaut);
     }
 }

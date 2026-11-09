@@ -1,24 +1,25 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Chat;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class ChatMappingProfile : Profile
+public class ChatMappings : IRegister
 {
-    public ChatMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<ChatMessage, ChatMessageDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty));
+        config.NewConfig<ChatMessage, ChatMessageDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty);
 
-        CreateMap<SendChatMessageRequest, ChatMessage>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronaut, opt => opt.Ignore())
-            .ForMember(d => d.SenderUserId, opt => opt.Ignore())
-            .ForMember(d => d.SenderRole, opt => opt.Ignore())
-            .ForMember(d => d.SentAt, opt => opt.Ignore())
-            .ForMember(d => d.ReadAt, opt => opt.Ignore());
+        config.NewConfig<SendChatMessageRequest, ChatMessage>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.AstronautId)
+            .Ignore(dest => dest.Astronaut)
+            .Ignore(dest => dest.SenderUserId)
+            .Ignore(dest => dest.SenderRole)
+            .Ignore(dest => dest.SentAt)
+            .Ignore(dest => dest.ReadAt);
     }
 }

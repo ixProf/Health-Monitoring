@@ -16,9 +16,6 @@ public class SyncBatchRequestValidator : AbstractValidator<SyncBatchRequest>
         // PLACEHOLDER: 5-minute future tolerance for offline client clock skew; requires operational review
         var toleranceMinutes = configuration?["Sync:FutureToleranceMinutes"] is string val && double.TryParse(val, out var m) ? m : 5.0;
 
-        RuleFor(x => x.AstronautId)
-            .GreaterThan(0).WithMessage("AstronautId must be greater than 0.");
-
         RuleFor(x => x.DeviceSyncTime)
             .NotEmpty().WithMessage("DeviceSyncTime is required.")
             .Must(t => t <= provider.GetUtcNow().UtcDateTime.AddMinutes(toleranceMinutes))

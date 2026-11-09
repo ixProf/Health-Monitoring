@@ -1,21 +1,21 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Guides;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class GuideMappingProfile : Profile
+public class GuideMappings : IRegister
 {
-    public GuideMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<HealthMetricGuide, HealthMetricGuideDto>()
-            .ForMember(d => d.VitalSignTypeCode, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Code : string.Empty));
+        config.NewConfig<HealthMetricGuide, HealthMetricGuideDto>()
+            .Map(dest => dest.VitalSignTypeCode, src => src.VitalSignType != null ? src.VitalSignType.Code : string.Empty);
 
-        CreateMap<UpdateHealthMetricGuideRequest, HealthMetricGuide>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignTypeId, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignType, opt => opt.Ignore());
+        config.NewConfig<UpdateHealthMetricGuideRequest, HealthMetricGuide>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.VitalSignTypeId)
+            .Ignore(dest => dest.VitalSignType);
     }
 }

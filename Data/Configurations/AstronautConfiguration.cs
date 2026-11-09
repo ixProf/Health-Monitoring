@@ -37,7 +37,17 @@ public class AstronautConfiguration : IEntityTypeConfiguration<Astronaut>
         builder.Property(a => a.UserId)
             .HasMaxLength(450);
 
-        builder.HasIndex(a => a.UserId);
+        // One-to-zero-or-one relationship: An ApplicationUser can be linked to at most one Astronaut.
+        // DeleteBehavior.SetNull ensures medical telemetry is never lost if an Identity user account is deleted.
+        builder.HasOne(a => a.User)
+            .WithOne(u => u.Astronaut)
+            .HasForeignKey<Astronaut>(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Unique filtered index: Ensures non-null UserIds cannot be claimed by multiple astronauts.
+        builder.HasIndex(a => a.UserId)
+            .IsUnique()
+            .HasFilter("\"UserId\" IS NOT NULL");
 
         builder.Property(a => a.Gender)
             .HasMaxLength(20);

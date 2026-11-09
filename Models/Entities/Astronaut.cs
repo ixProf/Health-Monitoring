@@ -10,6 +10,7 @@ public class Astronaut : BaseEntity
 {
     // Identity link for Auth (Phase 4)
     public string? UserId { get; set; }
+    public ApplicationUser? User { get; set; }
 
     /// <summary>
     /// Operational code for quick monitor search (e.g., "AST-042", "CDR-EVA-1").

@@ -4,7 +4,7 @@ using AstronautHealthMonitoring.Models.Enums;
 namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
-/// Telemedicine consultation request submitted by an astronaut to Earth flight surgeons.
+/// Telemedicine consultation request submitted by an astronaut to Earth ground monitors.
 /// </summary>
 public class MedicalSupportRequest : BaseEntity
 {

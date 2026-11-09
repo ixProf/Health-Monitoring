@@ -27,7 +27,7 @@ public class HealthReport : BaseEntity
     public string RecommendationsSummary { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identifier or name of generator (e.g. "Automated Health Engine" or "Dr. Earth Flight Surgeon").
+    /// Identifier or name of generator (e.g. "Automated Health Engine" or "Ground Monitor Lead").
     /// </summary>
     public string GeneratedBy { get; set; } = string.Empty;
 }

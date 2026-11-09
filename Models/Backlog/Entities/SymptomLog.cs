@@ -5,7 +5,7 @@ namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
 /// Astronaut self-reported symptom entry (e.g. Space Motion Sickness / SAS, cephalad fluid shift headache, back pain, visual changes).
-/// Links optionally to concurrent vital sign readings to aid Earth flight surgeons in correlating symptoms with telemetry.
+/// Links optionally to concurrent vital sign readings to aid ground monitors in correlating symptoms with telemetry.
 /// Principle: The system logs subjective symptoms and observable signs; it does not assign disease diagnoses.
 /// </summary>
 public class SymptomLog : BaseEntity

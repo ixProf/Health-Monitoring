@@ -4,7 +4,7 @@ using AstronautHealthMonitoring.Models.Enums;
 namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
-/// Predefined emergency procedures tailored for an astronaut who is not a doctor.
+/// Predefined emergency procedures tailored for an astronaut without specialized clinical training.
 /// Contains step-by-step instructions and immediate countermeasures.
 /// </summary>
 public class EmergencyProcedure : BaseEntity
@@ -28,7 +28,7 @@ public class EmergencyProcedure : BaseEntity
     public string RequiredEquipment { get; set; } = string.Empty;
 
     /// <summary>
-    /// Clinical advisory notes from ground monitors or flight surgeons.
+    /// Advisory notes from ground monitors or mission support.
     /// </summary>
     public string? GuidanceNotes { get; set; }
 

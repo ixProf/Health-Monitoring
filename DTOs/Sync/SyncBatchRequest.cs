@@ -7,7 +7,6 @@ namespace AstronautHealthMonitoring.DTOs.Sync;
 
 public class SyncBatchRequest
 {
-    public int AstronautId { get; set; }
     public DateTime DeviceSyncTime { get; set; }
 
     public List<CreateVitalSignReadingRequest> VitalSignReadings { get; set; } = new();

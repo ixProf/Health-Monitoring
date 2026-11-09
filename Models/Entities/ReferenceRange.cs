@@ -6,7 +6,7 @@ namespace AstronautHealthMonitoring.Models.Entities;
 /// <summary>
 /// Reference values used by the rule-based alert engine to evaluate readings.
 /// Supports both scalar metrics (Heart Rate, SpO2) and paired metrics (Blood Pressure Systolic/Diastolic).
-/// A range is unreviewed until operational staff or flight surgeons formally sign off.
+/// A range is unreviewed until operational staff or ground monitors formally sign off.
 /// </summary>
 /// <remarks>
 /// Status determination rule:

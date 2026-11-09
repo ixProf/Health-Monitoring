@@ -19,8 +19,8 @@ public class MedicalHistoryEntry : BaseEntity
     public DateTime? DiagnosedDate { get; set; }
 
     /// <summary>
-    /// Flight surgeon clinical recommendations or mission considerations for this condition.
+    /// Ground monitor operational recommendations or mission considerations for this condition.
     /// </summary>
-    public string? FlightSurgeonNotes { get; set; }
+    public string? MonitorNotes { get; set; }
 }
 

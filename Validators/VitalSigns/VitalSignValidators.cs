@@ -15,9 +15,6 @@ public class CreateVitalSignReadingRequestValidator : AbstractValidator<CreateVi
         RuleFor(x => x.ClientGeneratedId)
             .NotEmpty().WithMessage("ClientGeneratedId is required and cannot be empty.");
 
-        RuleFor(x => x.AstronautId)
-            .GreaterThan(0).WithMessage("AstronautId must be greater than 0.");
-
         RuleFor(x => x.VitalSignTypeId)
             .GreaterThan(0).WithMessage("VitalSignTypeId must be greater than 0.");
 

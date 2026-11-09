@@ -1,18 +1,18 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Alerts;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class AlertMappingProfile : Profile
+public class AlertMappings : IRegister
 {
-    public AlertMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<HealthAlert, HealthAlertDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty))
-            .ForMember(d => d.VitalSignTypeId, opt => opt.MapFrom(s => s.VitalSignReading != null ? (int?)s.VitalSignReading.VitalSignTypeId : null))
-            .ForMember(d => d.VitalSignTypeCode, opt => opt.MapFrom(s => s.VitalSignReading != null && s.VitalSignReading.VitalSignType != null ? s.VitalSignReading.VitalSignType.Code : null))
-            .ForMember(d => d.EmergencyProcedureCode, opt => opt.MapFrom(s => s.EmergencyProcedure != null ? s.EmergencyProcedure.Code : null))
-            .ForMember(d => d.EmergencyProcedureTitle, opt => opt.MapFrom(s => s.EmergencyProcedure != null ? s.EmergencyProcedure.Title : null));
+        config.NewConfig<HealthAlert, HealthAlertDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty)
+            .Map(dest => dest.VitalSignTypeId, src => src.VitalSignReading != null ? (int?)src.VitalSignReading.VitalSignTypeId : null)
+            .Map(dest => dest.VitalSignTypeCode, src => src.VitalSignReading != null && src.VitalSignReading.VitalSignType != null ? src.VitalSignReading.VitalSignType.Code : null)
+            .Map(dest => dest.EmergencyProcedureCode, src => src.EmergencyProcedure != null ? src.EmergencyProcedure.Code : null)
+            .Map(dest => dest.EmergencyProcedureTitle, src => src.EmergencyProcedure != null ? src.EmergencyProcedure.Title : null);
     }
 }

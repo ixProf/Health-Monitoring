@@ -1,14 +1,13 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.Emergency;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class EmergencyMappingProfile : Profile
+public class EmergencyMappings : IRegister
 {
-    public EmergencyMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<EmergencyProcedure, EmergencyProcedureDto>();
+        config.NewConfig<EmergencyProcedure, EmergencyProcedureDto>();
     }
 }
-

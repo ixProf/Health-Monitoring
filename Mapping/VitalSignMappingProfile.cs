@@ -1,28 +1,29 @@
-using AutoMapper;
+using Mapster;
 using AstronautHealthMonitoring.DTOs.VitalSigns;
 using AstronautHealthMonitoring.Models.Entities;
 
 namespace AstronautHealthMonitoring.Mapping;
 
-public class VitalSignMappingProfile : Profile
+public class VitalSignMappings : IRegister
 {
-    public VitalSignMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<VitalSignReading, VitalSignReadingDto>()
-            .ForMember(d => d.AstronautFullName, opt => opt.MapFrom(s => s.Astronaut != null ? s.Astronaut.FullName : string.Empty))
-            .ForMember(d => d.VitalSignTypeCode, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Code : string.Empty))
-            .ForMember(d => d.VitalSignTypeName, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Name : string.Empty))
-            .ForMember(d => d.Unit, opt => opt.MapFrom(s => s.VitalSignType != null ? s.VitalSignType.Unit : string.Empty));
+        config.NewConfig<VitalSignReading, VitalSignReadingDto>()
+            .Map(dest => dest.AstronautFullName, src => src.Astronaut != null ? src.Astronaut.FullName : string.Empty)
+            .Map(dest => dest.VitalSignTypeCode, src => src.VitalSignType != null ? src.VitalSignType.Code : string.Empty)
+            .Map(dest => dest.VitalSignTypeName, src => src.VitalSignType != null ? src.VitalSignType.Name : string.Empty)
+            .Map(dest => dest.Unit, src => src.VitalSignType != null ? src.VitalSignType.Unit : string.Empty);
 
-        CreateMap<CreateVitalSignReadingRequest, VitalSignReading>()
-            .ForMember(d => d.Id, opt => opt.Ignore())
-            .ForMember(d => d.CreatedAt, opt => opt.Ignore())
-            .ForMember(d => d.UpdatedAt, opt => opt.Ignore())
-            .ForMember(d => d.Astronaut, opt => opt.Ignore())
-            .ForMember(d => d.VitalSignType, opt => opt.Ignore())
-            .ForMember(d => d.Status, opt => opt.Ignore())
-            .ForMember(d => d.HealthAlerts, opt => opt.Ignore());
+        config.NewConfig<CreateVitalSignReadingRequest, VitalSignReading>()
+            .Ignore(dest => dest.Id)
+            .Ignore(dest => dest.CreatedAt)
+            .Ignore(dest => dest.UpdatedAt)
+            .Ignore(dest => dest.AstronautId)
+            .Ignore(dest => dest.Astronaut)
+            .Ignore(dest => dest.VitalSignType)
+            .Ignore(dest => dest.Status)
+            .Ignore(dest => dest.HealthAlerts);
 
-        CreateMap<VitalSignType, VitalSignTypeDto>();
+        config.NewConfig<VitalSignType, VitalSignTypeDto>();
     }
 }

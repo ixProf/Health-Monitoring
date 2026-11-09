@@ -15,9 +15,6 @@ public class CreateMoodEntryRequestValidator : AbstractValidator<CreateMoodEntry
         RuleFor(x => x.ClientGeneratedId)
             .NotEmpty().WithMessage("ClientGeneratedId is required and cannot be empty.");
 
-        RuleFor(x => x.AstronautId)
-            .GreaterThan(0).WithMessage("AstronautId must be greater than 0.");
-
         RuleFor(x => x.MoodScore)
             .InclusiveBetween(1, 10).WithMessage("MoodScore must be between 1 and 10.");
 

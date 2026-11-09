@@ -3,7 +3,7 @@ using AstronautHealthMonitoring.Models.Common;
 namespace AstronautHealthMonitoring.Models.Entities;
 
 /// <summary>
-/// Operational medication regimen prescribed by the flight surgeon.
+/// Operational medication regimen prescribed for the astronaut.
 /// Directs drug administration schedules, dosage, route, and spaceflight pharmacology notes.
 /// </summary>
 public class Medication : BaseEntity
@@ -31,6 +31,6 @@ public class Medication : BaseEntity
     /// </summary>
     public string Instructions { get; set; } = string.Empty;
 
-    public string PrescribedByDoctor { get; set; } = string.Empty;
+    public string PrescribedBy { get; set; } = string.Empty;
 }
 
